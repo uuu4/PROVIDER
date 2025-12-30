@@ -2,14 +2,29 @@
 
 Central management system for distributed B2B SaaS platform. Manages tenant licenses, validates requests, and distributes updates.
 
-## 🚀 Quick Start
 
+## 🚀 Quick Start (Zero-Touch Docker Setup)
+
+We recommend using the automated one-click setup script.
+
+**Mac/Linux:**
+```bash
+./start_platform.sh
+```
+
+**Windows:**
+Double-click `start_platform.bat`
+
+👉 [Read full INSTALL.md for details](INSTALL.md)
+
+### Manual Development Setup (Old Way)
 ```bash
 cd backend
 composer install
 cp .env.example .env
 php artisan key:generate
 php artisan migrate
+php artisan db:seed
 php artisan serve --port=8001
 ```
 
