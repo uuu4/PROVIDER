@@ -1,0 +1,60 @@
+services:
+  # Database
+  provider-db:
+    image: postgres:15-alpine
+    container_name: provider-db
+    environment:
+      POSTGRES_DB: provider_db
+      POSTGRES_USER: provider_user
+      POSTGRES_PASSWORD: provider_password
+    volumes:
+      - provider_db_data:/var/lib/postgresql/data
+    networks:
+      - saas-network
+    ports:
+      - "5432:5432"
+
+  # Backend API
+  provider-api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: provider-api
+    restart: unless-stopped
+    depends_on:
+      - provider-db
+    environment:
+      DB_CONNECTION: pgsql
+      DB_HOST: provider-db
+      DB_PORT: 5432
+      DB_DATABASE: provider_db
+      DB_USERNAME: provider_user
+      DB_PASSWORD: provider_password
+      APP_URL: http://localhost:8001
+      FRONTEND_URL: http://localhost:4201
+    networks:
+      - saas-network
+    ports:
+      - "8001:8000"
+
+  # Frontend Admin Panel
+  provider-admin:
+    build:
+      context: ./admin-frontend
+      dockerfile: Dockerfile
+    container_name: provider-admin
+    restart: unless-stopped
+    depends_on:
+      - provider-api
+    ports:
+      - "4201:80"
+    networks:
+      - saas-network
+
+networks:
+  saas-network:
+    name: saas-network
+    driver: bridge
+
+volumes:
+  provider_db_data:

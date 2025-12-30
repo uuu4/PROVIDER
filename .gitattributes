@@ -1,0 +1,4 @@
+* text=auto
+
+# Enforce LF for shell scripts (Entrypoints must be LF even on Windows)
+*.sh text eol=lf
